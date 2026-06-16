@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Unit Circle & Trigonometric Identity Lab Pro</title>
+<style>
+:root {
+  --bg: #f0f2f5;
+  --card: #ffffff;
+  --primary: #4361ee;
+  --primary-light: #eef0ff;
+  --primary-dark: #3248d0;
+  --accent: #7209b7;
+  --sin-color: #e63946;
+  --cos-color: #457b9d;
+  --tan-color: #e9c46a;
+  --triangle-fill: rgba(69,123,157,0.12);
+  --ray-color: #4361ee;
+  --point-color: #4361ee;
+  --arc-color: #7209b7;
+  --tangent-color: #e76f51;
+  --text: #1d1d2c;
+  --text-secondary: #5a5a7a;
+  --border: #e0e3ea;
+  --shadow: 0 2px 12px rgba(0,0,0,0.07);
+  --radius: 12px;
+  --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --mono: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+.app-header {
+  background: linear-gradient(135deg, #4361ee 0%, #7209b7 100%);
+  color: #fff;
+  padding: 18px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 16px rgba(67,97,238,0.25);
+  position: relative;
+  z-index: 10;
+}
+.app-header h1 {
+  font-size: 1.55rem;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  text-align: center;
+  width: 100%;
+  line-height: 1.3;
+}
+.app-header .made-by {
+  display: block;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-top: 4px;
+  letter-spacing: 0.5px;
+}
+.layout {
+  display: grid;
+  grid-template-columns: 280px 1fr 280px;
+  gap: 0;
+  min-height: calc(100vh - 56px);
+}
+.panel {
+  padding: 16px;
+  overflow-y: auto;
+  max-height: calc(100vh - 56px);
+}
+.panel-left {
+  background: #f7f8fb;
+  border-right: 1px solid var(--border);
+}
+.panel-right {
+  background: #f7f8fb;
+  border-left: 1px solid var(--border);
+}
+.panel-center {
+  background: var(--card);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 12px;
+}
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+.card-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+/* Toggle Switch */
+.toggle-group {
+  display: flex;
+  background: #eef0f5;
+  border-radius: 8px;
+  padding: 3px;
+  margin-bottom: 8px;
+}
+.toggle-btn {
+  flex: 1;
+  padding: 7px 10px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--text-secondary);
+  font-family: var(--font);
+}
+.toggle-btn.active {
+  background: var(--primary);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(67,97,238,0.3);
+}
+.toggle-btn:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+/* Slider */
+.slider-container {
+  margin-bottom: 8px;
+}
+.slider-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.slider-label span {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.slider-label .angle-display {
+  font-family: var(--mono);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 6px;
+  background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  background: var(--primary);
+  border-radius: 50%;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 6px rgba(67,97,238,0.4);
+  cursor: grab;
+  transition: transform 0.15s;
+}
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: var(--primary);
+  border-radius: 50%;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 6px rgba(67,97,238,0.4);
+  cursor: grab;
+}
+input[type="range"]:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+/* Checkbox */
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  cursor: pointer;
+}
+.checkbox-item input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+.checkbox-item label {
+  font-size: 0.82rem;
+  cursor: pointer;
+  user-select: none;
+}
+.checkbox-item input:focus-visible + label {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+/* Trig Values */
+.trig-value {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  border-bottom: 1px solid #f0f0f5;
+}
+.trig-value:last-child { border-bottom: none; }
+.trig-value .fn {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.trig-value .val {
+  font-family: var(--mono);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+.trig-value.sin-val .val { color: var(--sin-color); }
+.trig-value.cos-val .val { color: var(--cos-color); }
+.trig-value.tan-val .val { color: var(--tan-color); }
+.trig-value.csc-val .val { color: var(--sin-color); }
+.trig-value.sec-val .val { color: var(--cos-color); }
+.trig-value.cot-val .val { color: var(--tan-color); }
+/* Coordinate */
+.coord-display {
+  text-align: center;
+  padding: 10px;
+  background: var(--primary-light);
+  border-radius: 8px;
+  margin-top: 8px;
+}
+.coord-display .coord-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+.coord-display .coord-val {
+  font-family: var(--mono);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--primary-dark);
+}
+/* SVG Circle */
+#unit-circle-svg {
+  width: 100%;
+  max-width: 560px;
+  height: auto;
+  cursor: crosshair;
+  user-select: none;
+  -webkit-user-select: none;
+}
+/* Right Panel - Identity */
+.identity-bar-container {
+  margin: 8px 0;
+}
+.identity-bar {
+  display: flex;
+  height: 38px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+  margin-bottom: 6px;
+}
+.identity-bar .cos-sq {
+  background: var(--cos-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-family: var(--mono);
+  min-width: 28px;
+  transition: width 0.3s ease;
+}
+.identity-bar .sin-sq {
+  background: var(--sin-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-family: var(--mono);
+  min-width: 28px;
+  transition: width 0.3s ease;
+}
+.identity-equation {
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  padding: 8px;
+  background: #f7f8fb;
+  border-radius: 8px;
+  margin-top: 6px;
+}
+.identity-equation .cos-val { color: var(--cos-color); }
+.identity-equation .sin-val { color: var(--sin-color); }
+.identity-equation .eq-result { color: var(--primary-dark); }
+
+/* Additional identity bars */
+.identity-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+.identity-row .label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  width: 50px;
+  text-align: right;
+  flex-shrink: 0;
+}
+.identity-row .bar-track {
+  flex: 1;
+  height: 22px;
+  background: #eef0f5;
+  border-radius: 5px;
+  overflow: hidden;
+  position: relative;
+}
+.identity-row .bar-fill {
+  height: 100%;
+  border-radius: 5px;
+  transition: width 0.3s ease;
+  min-width: 2px;
+}
+.identity-row .bar-val {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-left: 6px;
+  width: 50px;
+  flex-shrink: 0;
+}
+
+/* Play button row */
+.play-btn-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.play-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex: 1;
+  padding: 9px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: var(--font);
+}
+.play-btn:hover { background: var(--primary-dark); }
+.play-btn:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.play-btn.playing { background: var(--sin-color); }
+.play-btn svg { width: 15px; height: 15px; fill: currentColor; }
+.reset-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 14px;
+  background: #6c757d;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: var(--font);
+}
+.reset-btn:hover { background: #495057; }
+.reset-btn:focus-visible { outline: 2px solid #6c757d; outline-offset: 2px; }
+
+/* Common angles table */
+.common-angles-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px;
+  max-height: 220px;
+  overflow-y: auto;
+  font-size: 0.72rem;
+}
+.common-angle-item {
+  padding: 4px 6px;
+  background: #f7f8fb;
+  border-radius: 4px;
+  font-family: var(--mono);
+  cursor: pointer;
+  transition: background 0.15s;
+  text-align: center;
+}
+.common-angle-item:hover {
+  background: var(--primary-light);
+}
+.common-angle-item.active {
+  background: var(--primary);
+  color: #fff;
+}
+
+/* Signs by Quadrant Table */
+.quadrant-signs-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.75rem;
+  text-align: center;
+}
+.quadrant-signs-table th {
+  background: #eef0f5;
+  padding: 5px 3px;
+  font-weight: 700;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+.quadrant-signs-table td {
+  padding: 5px 3px;
+  border: 1px solid var(--border);
+  font-family: var(--mono);
+  font-weight: 700;
+}
+.quadrant-signs-table .q-label-cell {
+  font-family: var(--font);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-align: left;
+  padding-left: 6px;
+}
+.quadrant-signs-table .q-note {
+  font-family: var(--font);
+  font-size: 0.62rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  display: block;
+}
+.sign-pos { color: #16a34a; }
+.sign-neg { color: #dc2626; }
+
+/* Radian/degree info */
+.angle-info {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.angle-info .info-chip {
+  flex: 1;
+  text-align: center;
+  padding: 6px;
+  background: #f7f8fb;
+  border-radius: 6px;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.angle-info .info-chip.deg { color: var(--primary); }
+.angle-info .info-chip.rad { color: var(--accent); }
+
+/* Quadrant indicator */
+.quadrant-indicator {
+  text-align: center;
+  padding: 6px;
+  background: linear-gradient(135deg, var(--primary-light), #f3e8ff);
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+.quadrant-indicator .q-label {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.quadrant-indicator .q-val {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--primary-dark);
+}
+
+/* Reference angle */
+.ref-angle-display {
+  text-align: center;
+  padding: 6px;
+  background: #fff8e8;
+  border-radius: 8px;
+  border: 1px solid #ffe0a0;
+}
+.ref-angle-display .ref-label {
+  font-size: 0.7rem;
+  color: #996600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.ref-angle-display .ref-val {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #b37400;
+  font-family: var(--mono);
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .layout {
+    grid-template-columns: 240px 1fr 240px;
+  }
+}
+@media (max-width: 860px) {
+  .layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
+  }
+  .panel { max-height: none; }
+  .panel-left, .panel-right { border: none; border-bottom: 1px solid var(--border); }
+  .panel-center { min-height: 420px; }
+}
+@media (max-width: 500px) {
+  html { font-size: 13px; }
+  .panel { padding: 10px; }
+  .card { padding: 10px; }
+}
+
+/* Scrollbar */
+.panel::-webkit-scrollbar { width: 5px; }
+.panel::-webkit-scrollbar-track { background: transparent; }
+.panel::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+
+/* Print-friendly */
+@media print {
+  .app-header { background: #333 !important; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  .panel-left, .panel-right { max-height: none; }
+}
+</style>
+</head>
+<body>
+<header class="app-header">
+  <h1>Interactive Unit Circle &amp; Trigonometric Identity Lab Pro<span class="made-by">Made by Ahmed Said  &bull;  Made for Brookdale Community College</span></h1>
+</header>
+
+<div class="layout">
+  <!-- LEFT PANEL -->
+  <aside class="panel panel-left" role="complementary" aria-label="Controls and values">
+
+    <!-- Angle Mode Toggle -->
+    <div class="card">
+      <div class="card-title">Angle Mode</div>
+      <div class="toggle-group" role="radiogroup" aria-label="Angle mode">
+        <button class="toggle-btn active" id="btn-deg" role="radio" aria-checked="true" onclick="setAngleMode('degrees')">Degrees</button>
+        <button class="toggle-btn" id="btn-rad" role="radio" aria-checked="false" onclick="setAngleMode('radians')">Radians</button>
+      </div>
+    </div>
+
+    <!-- Angle Slider -->
+    <div class="card">
+      <div class="card-title">Angle</div>
+      <div class="angle-info">
+        <div class="info-chip deg" id="deg-display">45&deg;</div>
+        <div class="info-chip rad" id="rad-display">&pi;/4</div>
+      </div>
+      <div class="slider-container">
+        <div class="slider-label">
+          <span>&theta;</span>
+          <span class="angle-display" id="angle-display">&theta; = 45&deg;</span>
+        </div>
+        <input type="range" id="angle-slider" min="0" max="360" value="45" step="1" aria-label="Angle slider" oninput="onSliderInput(this.value)">
+      </div>
+      <label class="checkbox-item">
+        <input type="checkbox" id="chk-snap" checked onchange="onSnapChange()">
+        <label for="chk-snap">Snap to Common Angles</label>
+      </label>
+    </div>
+
+    <!-- Animation -->
+    <div class="card">
+      <div class="card-title">Animation</div>
+      <div class="play-btn-row">
+        <button class="play-btn" id="play-btn" onclick="togglePlay()" aria-label="Play animation">
+          <svg viewBox="0 0 24 24" id="play-icon"><polygon points="5,3 19,12 5,21"/></svg>
+          <span id="play-text">Play</span>
+        </button>
+        <button class="reset-btn" id="reset-btn" onclick="resetAngle()" aria-label="Reset angle to 0">Reset</button>
+      </div>
+      <div class="slider-container">
+        <div class="slider-label"><span>Speed</span><span class="angle-display" id="speed-display">2&deg;/frame</span></div>
+        <input type="range" id="speed-slider" min="1" max="10" value="2" step="1" aria-label="Animation speed" oninput="onSpeedChange(this.value)">
+      </div>
+    </div>
+
+    <!-- Show/Hide -->
+    <div class="card">
+      <div class="card-title">Display Options</div>
+      <label class="checkbox-item"><input type="checkbox" id="chk-circle" checked onchange="update()"><label for="chk-circle">Show Unit Circle Body</label></label>
+      <label class="checkbox-item"><input type="checkbox" id="chk-common" checked onchange="update()"><label for="chk-common">Show Common Angles</label></label>
+      <label class="checkbox-item"><input type="checkbox" id="chk-coords" checked onchange="update()"><label for="chk-coords">Show Coordinates</label></label>
+      <label class="checkbox-item"><input type="checkbox" id="chk-triangle" checked onchange="update()"><label for="chk-triangle">Show Reference Triangle</label></label>
+      <label class="checkbox-item"><input type="checkbox" id="chk-projections" checked onchange="update()"><label for="chk-projections">Show Projections</label></label>
+      <label class="checkbox-item"><input type="checkbox" id="chk-tangent" onchange="update()"><label for="chk-tangent">Show Tangent Line</label></label>
+      <label class="checkbox-item"><input type="checkbox" id="chk-arc" checked onchange="update()"><label for="chk-arc">Show Angle Arc</label></label>
+    </div>
+
+    <!-- Value Mode Toggle -->
+    <div class="card">
+      <div class="card-title">Value Display</div>
+      <div class="toggle-group" role="radiogroup" aria-label="Value display mode">
+        <button class="toggle-btn active" id="btn-exact" role="radio" aria-checked="true" onclick="setValueMode('exact')">Exact Values</button>
+        <button class="toggle-btn" id="btn-decimal" role="radio" aria-checked="false" onclick="setValueMode('decimal')">Decimal Values</button>
+      </div>
+    </div>
+
+    <!-- Trig Values -->
+    <div class="card">
+      <div class="card-title">Trigonometric Values</div>
+      <div class="trig-value sin-val"><span class="fn">sin(&theta;)</span><span class="val" id="val-sin">&radic;2/2</span></div>
+      <div class="trig-value cos-val"><span class="fn">cos(&theta;)</span><span class="val" id="val-cos">&radic;2/2</span></div>
+      <div class="trig-value tan-val"><span class="fn">tan(&theta;)</span><span class="val" id="val-tan">1</span></div>
+      <div class="trig-value csc-val"><span class="fn">csc(&theta;)</span><span class="val" id="val-csc">&radic;2</span></div>
+      <div class="trig-value sec-val"><span class="fn">sec(&theta;)</span><span class="val" id="val-sec">&radic;2</span></div>
+      <div class="trig-value cot-val"><span class="fn">cot(&theta;)</span><span class="val" id="val-cot">1</span></div>
+    </div>
+
+    <!-- Coordinate -->
+    <div class="card">
+      <div class="coord-display">
+        <div class="coord-label">Point on Circle</div>
+        <div class="coord-val" id="coord-display">(&radic;2/2, &radic;2/2)</div>
+      </div>
+    </div>
+
+    <!-- Quadrant & Reference Angle -->
+    <div class="card">
+      <div class="quadrant-indicator">
+        <div class="q-label">Quadrant</div>
+        <div class="q-val" id="quadrant-val">I</div>
+      </div>
+      <div class="ref-angle-display" style="margin-top:8px;">
+        <div class="ref-label">Reference Angle</div>
+        <div class="ref-val" id="ref-angle-val">45&deg;</div>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- CENTER PANEL -->
+  <main class="panel panel-center" role="main" aria-label="Unit circle visualization">
+    <svg id="unit-circle-svg" viewBox="0 0 560 560" xmlns="http://www.w3.org/2000/svg" aria-label="Interactive unit circle">
+      <defs>
+        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#000000"/>
+        </marker>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+          <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="shadow">
+          <feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity="0.15"/>
+        </filter>
+      </defs>
+      <!-- Grid lines -->
+      <g id="grid-lines" opacity="0.08"></g>
+      <!-- Axes -->
+      <g id="axes"></g>
+      <!-- Axis labels -->
+      <g id="axis-labels" font-family="'Segoe UI',system-ui,sans-serif" font-size="13" fill="#000000" font-weight="700"></g>
+      <!-- Unit circle -->
+      <g id="unit-circle-group"></g>
+      <!-- Common angle points -->
+      <g id="common-points"></g>
+      <!-- Common angle labels -->
+      <g id="common-labels" font-family="'Segoe UI',system-ui,sans-serif" font-size="10" font-weight="700"></g>
+      <!-- Angle arc -->
+      <g id="angle-arc"></g>
+      <!-- Reference triangle -->
+      <g id="ref-triangle"></g>
+      <!-- Projections -->
+      <g id="projections"></g>
+      <!-- Tangent line -->
+      <g id="tangent-line"></g>
+      <!-- Radius ray -->
+      <g id="radius-ray"></g>
+      <!-- Current point -->
+      <g id="current-point"></g>
+      <!-- Angle label -->
+      <g id="angle-label" font-family="'Segoe UI',system-ui,sans-serif" font-size="14" font-weight="700"></g>
+      <!-- Projection labels -->
+      <g id="projection-labels" font-family="'Segoe UI',system-ui,sans-serif" font-weight="700"></g>
+    </svg>
+  </main>
+
+  <!-- RIGHT PANEL -->
+  <aside class="panel panel-right" role="complementary" aria-label="Identity visualizations">
+
+    <!-- Pythagorean Identity -->
+    <div class="card">
+      <div class="card-title">Pythagorean Identity</div>
+      <div class="identity-bar-container">
+        <div style="font-size:0.82rem;font-weight:600;text-align:center;margin-bottom:6px;color:var(--text-secondary);">sin&sup2;(&theta;) + cos&sup2;(&theta;) = 1</div>
+        <div class="identity-bar" id="pyth-bar">
+          <div class="cos-sq" id="pyth-cos" style="width:50%">cos&sup2;&theta;</div>
+          <div class="sin-sq" id="pyth-sin" style="width:50%">sin&sup2;&theta;</div>
+        </div>
+        <div class="identity-equation" id="pyth-eq">
+          <span class="cos-val">0.5000</span> + <span class="sin-val">0.5000</span> = <span class="eq-result">1.0000</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- sin and cos value bars -->
+    <div class="card">
+      <div class="card-title">Function Values</div>
+      <div class="identity-row">
+        <span class="label" style="color:var(--sin-color)">sin&theta;</span>
+        <div class="bar-track"><div class="bar-fill" id="bar-sin" style="background:var(--sin-color);width:50%"></div></div>
+        <span class="bar-val" id="bar-sin-val">0.5000</span>
+      </div>
+      <div class="identity-row">
+        <span class="label" style="color:var(--cos-color)">cos&theta;</span>
+        <div class="bar-track"><div class="bar-fill" id="bar-cos" style="background:var(--cos-color);width:50%"></div></div>
+        <span class="bar-val" id="bar-cos-val">0.5000</span>
+      </div>
+      <div class="identity-row">
+        <span class="label" style="color:var(--tan-color)">tan&theta;</span>
+        <div class="bar-track"><div class="bar-fill" id="bar-tan" style="background:var(--tan-color);width:50%"></div></div>
+        <span class="bar-val" id="bar-tan-val">1.0000</span>
+      </div>
+    </div>
+
+    <!-- Additional Identities -->
+    <div class="card">
+      <div class="card-title">Related Identities</div>
+      <div style="font-size:0.82rem;line-height:1.9;color:var(--text-secondary);" id="related-identities">
+        <div>1 + tan&sup2;&theta; = sec&sup2;&theta;</div>
+        <div>1 + cot&sup2;&theta; = csc&sup2;&theta;</div>
+        <div>tan&theta; = sin&theta; / cos&theta;</div>
+        <div>cot&theta; = cos&theta; / sin&theta;</div>
+        <div>sin(2&theta;) = 2sin&theta;cos&theta;</div>
+        <div>cos(2&theta;) = cos&sup2;&theta; &minus; sin&sup2;&theta;</div>
+      </div>
+    </div>
+
+    <!-- Common Angles Quick Select -->
+    <div class="card">
+      <div class="card-title">Quick Angle Select</div>
+      <div class="toggle-group" role="radiogroup" aria-label="Quick angle display mode" style="margin-bottom:8px;">
+        <button class="toggle-btn active" id="btn-qa-deg" role="radio" aria-checked="true" onclick="setQuickAngleMode('degrees')">Degrees</button>
+        <button class="toggle-btn" id="btn-qa-rad" role="radio" aria-checked="false" onclick="setQuickAngleMode('radians')">Radians</button>
+      </div>
+      <div class="common-angles-grid" id="quick-angles"></div>
+    </div>
+
+    <!-- Sign info -->
+    <div class="card">
+      <div class="card-title">Signs by Quadrant</div>
+      <table class="quadrant-signs-table" aria-label="Signs of trigonometric functions by quadrant">
+        <thead>
+          <tr>
+            <th>Quadrant</th>
+            <th>sin</th>
+            <th>cos</th>
+            <th>tan</th>
+            <th>cot</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="q-label-cell">Q I<span class="q-note">All Positive</span></td>
+            <td class="sign-pos">+</td>
+            <td class="sign-pos">+</td>
+            <td class="sign-pos">+</td>
+            <td class="sign-pos">+</td>
+          </tr>
+          <tr>
+            <td class="q-label-cell">Q II<span class="q-note">Sine Positive</span></td>
+            <td class="sign-pos">+</td>
+            <td class="sign-neg">&minus;</td>
+            <td class="sign-neg">&minus;</td>
+            <td class="sign-neg">&minus;</td>
+          </tr>
+          <tr>
+            <td class="q-label-cell">Q III<span class="q-note">Tangent Positive</span></td>
+            <td class="sign-neg">&minus;</td>
+            <td class="sign-neg">&minus;</td>
+            <td class="sign-pos">+</td>
+            <td class="sign-pos">+</td>
+          </tr>
+          <tr>
+            <td class="q-label-cell">Q IV<span class="q-note">Cosine Positive</span></td>
+            <td class="sign-neg">&minus;</td>
+            <td class="sign-pos">+</td>
+            <td class="sign-neg">&minus;</td>
+            <td class="sign-neg">&minus;</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </aside>
+</div>
+
+<script>
+(function() {
+  "use strict";
+
+  /* ── Constants ── */
+  const SVG_NS = "http://www.w3.org/2000/svg";
+  const CX = 280, CY = 280, R = 210;
+  const DEG = Math.PI / 180;
+
+  const COMMON_DEGS = [0,30,45,60,90,120,135,150,180,210,225,240,270,300,315,330,360];
+
+  /* ── Exact value database ── */
+  const EXACT = {
+    0:   { rad:"0",       sin:"0",     cos:"1",     tan:"0",     csc:"undef",  sec:"1",     cot:"undef",  x:"1",    y:"0" },
+    30:  { rad:"π/6",     sin:"1/2",   cos:"√3/2",  tan:"√3/3",  csc:"2",      sec:"2√3/3", cot:"√3",     x:"√3/2",y:"1/2" },
+    45:  { rad:"π/4",     sin:"√2/2",  cos:"√2/2",  tan:"1",     csc:"√2",     sec:"√2",    cot:"1",      x:"√2/2",y:"√2/2" },
+    60:  { rad:"π/3",     sin:"√3/2",  cos:"1/2",   tan:"√3",    csc:"2√3/3",  sec:"2",     cot:"√3/3",   x:"1/2", y:"√3/2" },
+    90:  { rad:"π/2",     sin:"1",     cos:"0",     tan:"undef", csc:"1",      sec:"undef",  cot:"0",      x:"0",   y:"1" },
+    120: { rad:"2π/3",    sin:"√3/2",  cos:"-1/2",  tan:"-√3",   csc:"2√3/3",  sec:"-2",    cot:"-√3/3",  x:"-1/2",y:"√3/2" },
+    135: { rad:"3π/4",    sin:"√2/2",  cos:"-√2/2", tan:"-1",    csc:"√2",     sec:"-√2",   cot:"-1",     x:"-√2/2",y:"√2/2" },
+    150: { rad:"5π/6",    sin:"1/2",   cos:"-√3/2", tan:"-√3/3", csc:"2",      sec:"-2√3/3",cot:"-√3",    x:"-√3/2",y:"1/2" },
+    180: { rad:"π",       sin:"0",     cos:"-1",    tan:"0",     csc:"undef",  sec:"-1",     cot:"undef",  x:"-1",  y:"0" },
+    210: { rad:"7π/6",    sin:"-1/2",  cos:"-√3/2", tan:"√3/3",  csc:"-2",     sec:"-2√3/3",cot:"√3",     x:"-√3/2",y:"-1/2" },
+    225: { rad:"5π/4",    sin:"-√2/2", cos:"-√2/2", tan:"1",     csc:"-√2",    sec:"-√2",   cot:"1",      x:"-√2/2",y:"-√2/2" },
+    240: { rad:"4π/3",    sin:"-√3/2", cos:"-1/2",  tan:"√3",    csc:"-2√3/3", sec:"-2",    cot:"√3/3",   x:"-1/2", y:"-√3/2" },
+    270: { rad:"3π/2",    sin:"-1",    cos:"0",     tan:"undef", csc:"-1",     sec:"undef",  cot:"0",      x:"0",   y:"-1" },
+    300: { rad:"5π/3",    sin:"-√3/2", cos:"1/2",   tan:"-√3",   csc:"-2√3/3", sec:"2",     cot:"-√3/3",  x:"1/2", y:"-√3/2" },
+    315: { rad:"7π/4",    sin:"-√2/2", cos:"√2/2",  tan:"-1",    csc:"-√2",    sec:"√2",    cot:"-1",     x:"√2/2",y:"-√2/2" },
+    330: { rad:"11π/6",   sin:"-1/2",  cos:"√3/2",  tan:"-√3/3", csc:"-2",     sec:"2√3/3", cot:"-√3",    x:"√3/2",y:"-1/2" },
+    360: { rad:"2π",      sin:"0",     cos:"1",     tan:"0",     csc:"undef",  sec:"1",     cot:"undef",  x:"1",   y:"0" }
+  };
+
+  /* ── State ── */
+  let angle = 45;
+  let angleMode = "degrees";   // degrees | radians
+  let valueMode = "exact";     // exact | decimal
+  let quickAngleMode = "degrees"; // degrees | radians (for quick select)
+  let playing = false;
+  let animId = null;
+  let speed = 2;
+  let lastTimestamp = null;
+
+  /* ── DOM refs ── */
+  const svg = document.getElementById("unit-circle-svg");
+  const slider = document.getElementById("angle-slider");
+  const angleDisplay = document.getElementById("angle-display");
+  const degDisplay = document.getElementById("deg-display");
+  const radDisplay = document.getElementById("rad-display");
+
+  /* ── Helpers ── */
+  function el(tag, attrs, parent) {
+    const e = document.createElementNS(SVG_NS, tag);
+    for (const [k,v] of Object.entries(attrs||{})) e.setAttribute(k, v);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+
+  function toRad(deg) { return deg * DEG; }
+  function snapAngle(a) {
+    let best = 0, minD = 999;
+    for (const c of COMMON_DEGS) {
+      const d = Math.abs(a - c);
+      if (d < minD) { minD = d; best = c; }
+    }
+    return minD <= 5 ? best : a;
+  }
+
+  function radianStr(deg) {
+    const d = ((deg % 360) + 360) % 360;
+    if (EXACT[d]) return EXACT[d].rad;
+    return (d * DEG).toFixed(4);
+  }
+
+  function angleStr(deg) {
+    if (angleMode === "degrees") return deg + "\u00B0";
+    return radianStr(deg);
+  }
+
+  function refAngle(deg) {
+    const d = ((deg % 360) + 360) % 360;
+    if (d <= 90) return d;
+    if (d <= 180) return 180 - d;
+    if (d <= 270) return d - 180;
+    return 360 - d;
+  }
+
+  function quadrant(deg) {
+    const d = ((deg % 360) + 360) % 360;
+    if (d === 0 || d === 360) return "I (on axis)";
+    if (d === 90) return "I\u2013II (on axis)";
+    if (d === 180) return "II\u2013III (on axis)";
+    if (d === 270) return "III\u2013IV (on axis)";
+    if (d < 90) return "I";
+    if (d < 180) return "II";
+    if (d < 270) return "III";
+    return "IV";
+  }
+
+  function trigVal(deg, fn) {
+    const d = ((deg % 360) + 360) % 360;
+    if (valueMode === "exact" && EXACT[d]) {
+      const v = EXACT[d][fn];
+      return v === "undef" ? "undef" : v;
+    }
+    const rad = d * DEG;
+    switch(fn) {
+      case "sin": return Math.sin(rad).toFixed(4);
+      case "cos": return Math.cos(rad).toFixed(4);
+      case "tan": {
+        const c = Math.cos(rad);
+        return Math.abs(c) < 1e-10 ? "undef" : (Math.sin(rad)/c).toFixed(4);
+      }
+      case "csc": {
+        const s = Math.sin(rad);
+        return Math.abs(s) < 1e-10 ? "undef" : (1/s).toFixed(4);
+      }
+      case "sec": {
+        const c = Math.cos(rad);
+        return Math.abs(c) < 1e-10 ? "undef" : (1/c).toFixed(4);
+      }
+      case "cot": {
+        const s = Math.sin(rad);
+        return Math.abs(s) < 1e-10 ? "undef" : (Math.cos(rad)/s).toFixed(4);
+      }
+    }
+  }
+
+  function coordStr(deg) {
+    const d = ((deg % 360) + 360) % 360;
+    const rad = d * DEG;
+    if (valueMode === "exact" && EXACT[d]) {
+      return "(" + EXACT[d].x + ", " + EXACT[d].y + ")";
+    }
+    return "(" + Math.cos(rad).toFixed(4) + ", " + Math.sin(rad).toFixed(4) + ")";
+  }
+
+  /* ── Draw static elements ── */
+  function drawStatic() {
+    // Grid
+    const gridG = document.getElementById("grid-lines");
+    gridG.innerHTML = "";
+    for (let i = -1; i <= 1; i += 0.5) {
+      const px = CX + i * R;
+      const py = CY - i * R;
+      el("line", {x1:px,y1:CY-R-20,x2:px,y2:CY+R+20,stroke:"#aaa","stroke-width":0.5}, gridG);
+      el("line", {x1:CX-R-20,y1:py,x2:CX+R+20,y2:py,stroke:"#aaa","stroke-width":0.5}, gridG);
+    }
+
+    // Axes
+    const axesG = document.getElementById("axes");
+    axesG.innerHTML = "";
+    el("line", {x1:CX-R-30,y1:CY,x2:CX+R+30,y2:CY,stroke:"#000000","stroke-width":2,"marker-end":"url(#arrowhead)"}, axesG);
+    el("line", {x1:CX,y1:CY+R+30,x2:CX,y2:CY-R-30,stroke:"#000000","stroke-width":2,"marker-end":"url(#arrowhead)"}, axesG);
+
+    // Axis labels
+    const labelsG = document.getElementById("axis-labels");
+    labelsG.innerHTML = "";
+    const xLbl = el("text", {x:CX+R+22,y:CY-8,"text-anchor":"middle"}, labelsG);
+    xLbl.textContent = "x";
+    const yLbl = el("text", {x:CX+12,y:CY-R-16,"text-anchor":"middle"}, labelsG);
+    yLbl.textContent = "y";
+    // Tick marks
+    for (let v = -1; v <= 1; v++) {
+      if (v === 0) continue;
+      const px = CX + v * R;
+      const py = CY - v * R;
+      el("line", {x1:px,y1:CY-5,x2:px,y2:CY+5,stroke:"#000000","stroke-width":2}, axesG);
+      el("line", {x1:CX-5,y1:py,x2:CX+5,y2:py,stroke:"#000000","stroke-width":2}, axesG);
+      const xt = el("text", {x:px,y:CY+20,"text-anchor":"middle",fill:"#000000","font-size":"12","font-weight":"700"}, labelsG);
+      xt.textContent = v;
+      const yt = el("text", {x:CX-14,y:py+5,"text-anchor":"end",fill:"#000000","font-size":"12","font-weight":"700"}, labelsG);
+      yt.textContent = v;
+    }
+    // Origin
+    const ot = el("text", {x:CX-12,y:CY+18,"text-anchor":"end",fill:"#000000","font-size":"12","font-weight":"700"}, labelsG);
+    ot.textContent = "0";
+
+    // Unit circle (toggle visibility via "Show Unit Circle Body" checkbox)
+    const circG = document.getElementById("unit-circle-group");
+    circG.innerHTML = "";
+    const showCircle = document.getElementById("chk-circle").checked;
+    if (showCircle) {
+      el("circle", {cx:CX,cy:CY,r:R,fill:"none",stroke:"#4361ee","stroke-width":2.5,opacity:0.85}, circG);
+    }
+  }
+
+  /* ── Draw dynamic elements ── */
+  function drawDynamic() {
+    const rad = angle * DEG;
+    const px = CX + R * Math.cos(rad);
+    const py = CY - R * Math.sin(rad);
+    const d = ((angle % 360) + 360) % 360;
+    const showCommon = document.getElementById("chk-common").checked;
+    const showCoords = document.getElementById("chk-coords").checked;
+    const showTriangle = document.getElementById("chk-triangle").checked;
+    const showProj = document.getElementById("chk-projections").checked;
+    const showTangent = document.getElementById("chk-tangent").checked;
+    const showArc = document.getElementById("chk-arc").checked;
+
+    // Common points
+    const cpG = document.getElementById("common-points");
+    cpG.innerHTML = "";
+    const clG = document.getElementById("common-labels");
+    clG.innerHTML = "";
+    if (showCommon) {
+      for (const deg of COMMON_DEGS) {
+        const a = deg * DEG;
+        const cpx = CX + R * Math.cos(a);
+        const cpy = CY - R * Math.sin(a);
+        el("circle", {cx:cpx, cy:cpy, r:5, fill:"#4361ee", stroke:"#000000", "stroke-width":1.2, opacity:0.85}, cpG);
+        // Labels
+        const labelR = R + 28;
+        const lx = CX + labelR * Math.cos(a);
+        const ly = CY - labelR * Math.sin(a);
+        const anchor = Math.abs(Math.cos(a)) < 0.01 ? "middle" : Math.cos(a) > 0 ? "start" : "end";
+        const baseLine = Math.abs(Math.sin(a)) < 0.01 ? (Math.sin(a) >= 0 ? "-6" : "14") : Math.sin(a) > 0 ? "-4" : "12";
+
+        const line1 = el("text", {x:lx,y:parseFloat(ly)-4+6,"text-anchor":anchor,"font-size":"10",fill:"#000000"}, clG);
+        line1.textContent = angleMode === "degrees" ? deg + "\u00B0" : EXACT[deg].rad;
+        if (showCoords && EXACT[deg]) {
+          const line2 = el("text", {x:lx,y:parseFloat(ly)+8+6,"text-anchor":anchor,"font-size":"9",fill:"#000000"}, clG);
+          line2.textContent = "(" + EXACT[deg].x + "," + EXACT[deg].y + ")";
+        }
+      }
+    }
+
+    // Angle arc
+    const arcG = document.getElementById("angle-arc");
+    arcG.innerHTML = "";
+    if (showArc && d > 0.5) {
+      const arcR = 38;
+      const startAngle = 0;
+      const endAngle = -d * DEG; // SVG is clockwise
+      const sx = CX + arcR;
+      const sy = CY;
+      const ex = CX + arcR * Math.cos(-d * DEG);
+      const ey = CY + arcR * Math.sin(-d * DEG);
+      const large = d > 180 ? 1 : 0;
+      el("path", {
+        d: "M " + sx + " " + sy + " A " + arcR + " " + arcR + " 0 " + large + " 0 " + ex + " " + ey,
+        fill: "rgba(114,9,183,0.08)",
+        stroke: "#7209b7",
+        "stroke-width": 2,
+        opacity: 0.8
+      }, arcG);
+    }
+
+    // Reference triangle
+    const triG = document.getElementById("ref-triangle");
+    triG.innerHTML = "";
+    if (showTriangle) {
+      const projX = CX + R * Math.cos(rad);
+      const projY = CY;
+      el("polygon", {
+        points: CX+","+CY+" "+projX+","+projY+" "+px+","+py,
+        fill: "rgba(69,123,157,0.1)",
+        stroke: "rgba(69,123,157,0.35)",
+        "stroke-width": 1
+      }, triG);
+      // Horizontal leg
+      el("line", {x1:CX,y1:CY,x2:projX,y2:projY,stroke:"var(--cos-color)","stroke-width":2.5,"stroke-dasharray":"6,3"}, triG);
+      // Vertical leg
+      el("line", {x1:projX,y1:projY,x2:px,y2:py,stroke:"var(--sin-color)","stroke-width":2.5,"stroke-dasharray":"6,3"}, triG);
+    }
+
+    // Projections
+    const projG = document.getElementById("projections");
+    projG.innerHTML = "";
+    if (showProj) {
+      // Cos projection (horizontal)
+      el("line", {x1:px,y1:py,x2:px,y2:CY,stroke:"var(--cos-color)","stroke-width":1.8,"stroke-dasharray":"4,4",opacity:0.6}, projG);
+      el("line", {x1:CX,y1:CY,x2:px,y2:CY,stroke:"var(--cos-color)","stroke-width":3,opacity:0.7}, projG);
+      // Sin projection (vertical)
+      el("line", {x1:px,y1:py,x2:CX,y2:py,stroke:"var(--sin-color)","stroke-width":1.8,"stroke-dasharray":"4,4",opacity:0.6}, projG);
+      el("line", {x1:CX,y1:CY,x2:CX,y2:py,stroke:"var(--sin-color)","stroke-width":3,opacity:0.7}, projG);
+      // Small markers on axes
+      el("circle", {cx:px,cy:CY,r:4,fill:"var(--cos-color)",opacity:0.8}, projG);
+      el("circle", {cx:CX,cy:py,r:4,fill:"var(--sin-color)",opacity:0.8}, projG);
+    }
+
+    // Tangent line
+    const tanG = document.getElementById("tangent-line");
+    tanG.innerHTML = "";
+    if (showTangent && Math.abs(Math.cos(rad)) > 1e-6) {
+      const tLen = 3;
+      // Tangent point on circle
+      const tx = CX + R;
+      const ty = CY;
+      // tangent line: vertical at x = R on circle (x=1 line)
+      // Actually the tangent line to the unit circle at the current point
+      // Direction: (-sin, cos) * scale
+      const tanDirX = -Math.sin(rad);
+      const tanDirY = -Math.cos(rad); // SVG y inverted
+      const tScale = R * 1.5;
+      el("line", {
+        x1: px - tanDirX * tScale,
+        y1: py - tanDirY * tScale,
+        x2: px + tanDirX * tScale,
+        y2: py + tanDirY * tScale,
+        stroke: "#e76f51",
+        "stroke-width": 2,
+        opacity: 0.7,
+        "stroke-dasharray": "8,4"
+      }, tanG);
+      // Show tangent segment on x=1 line
+      const tanVal = Math.tan(rad);
+      if (Math.abs(tanVal) < 10) {
+        const tanPx = CX + R;
+        const tanPy = CY - tanVal * R;
+        el("line", {x1:CX,y1:CY,x2:tanPx,y2:tanPy,stroke:"#e76f51","stroke-width":2,opacity:0.5}, tanG);
+        el("circle", {cx:tanPx,cy:tanPy,r:5,fill:"#e76f51",opacity:0.8}, tanG);
+        const tanLbl = el("text", {x:tanPx+8,y:tanPy+4,"font-size":"11",fill:"#e76f51","font-weight":"600"}, tanG);
+        tanLbl.textContent = "tan\u03B8=" + (valueMode==="exact"&&EXACT[d]?EXACT[d].tan:tanVal.toFixed(4));
+      }
+    }
+
+    // Radius ray
+    const rayG = document.getElementById("radius-ray");
+    rayG.innerHTML = "";
+    el("line", {x1:CX,y1:CY,x2:px,y2:py,stroke:"var(--ray-color)","stroke-width":3,filter:"url(#glow)",opacity:0.85}, rayG);
+
+    // Current point
+    const ptG = document.getElementById("current-point");
+    ptG.innerHTML = "";
+    el("circle", {cx:px,cy:py,r:9,fill:"var(--point-color)",stroke:"#fff","stroke-width":3,filter:"url(#shadow)",cursor:"grab"}, ptG);
+    el("circle", {cx:px,cy:py,r:3.5,fill:"#fff"}, ptG);
+
+    // Angle label near arc
+    const aLblG = document.getElementById("angle-label");
+    aLblG.innerHTML = "";
+    if (showArc) {
+      const midAngle = d / 2;
+      const midRad = midAngle * DEG;
+      const labelR2 = 55;
+      const alx = CX + labelR2 * Math.cos(midRad);
+      const aly = CY - labelR2 * Math.sin(midRad);
+      const aText = el("text", {x:alx,y:aly,"text-anchor":"middle","dominant-baseline":"central",fill:"#7209b7"}, aLblG);
+      aText.textContent = "\u03B8 = " + angleStr(d);
+    }
+
+    // Projection labels
+    const plG = document.getElementById("projection-labels");
+    plG.innerHTML = "";
+    if (showProj) {
+      // cos label
+      const cosLblX = (CX + px) / 2;
+      const cosLblY = CY + 18;
+      const cosT = el("text", {x:cosLblX,y:cosLblY,"text-anchor":"middle","font-size":"11",fill:"var(--cos-color)"}, plG);
+      cosT.textContent = "cos\u03B8 = " + (valueMode==="exact"&&EXACT[d]?EXACT[d].cos:Math.cos(rad).toFixed(3));
+
+      // sin label
+      const sinLblX = CX - 14;
+      const sinLblY = (CY + py) / 2;
+      const sinT = el("text", {x:sinLblX,y:sinLblY,"text-anchor":"end","font-size":"11",fill:"var(--sin-color)"}, plG);
+      sinT.textContent = "sin\u03B8 = " + (valueMode==="exact"&&EXACT[d]?EXACT[d].sin:Math.sin(rad).toFixed(3));
+    }
+  }
+
+  /* ── Update left panel values ── */
+  function updateValues() {
+    const d = ((angle % 360) + 360) % 360;
+    document.getElementById("val-sin").textContent = trigVal(d, "sin");
+    document.getElementById("val-cos").textContent = trigVal(d, "cos");
+    document.getElementById("val-tan").textContent = trigVal(d, "tan");
+    document.getElementById("val-csc").textContent = trigVal(d, "csc");
+    document.getElementById("val-sec").textContent = trigVal(d, "sec");
+    document.getElementById("val-cot").textContent = trigVal(d, "cot");
+    document.getElementById("coord-display").textContent = coordStr(d);
+
+    // Angle display
+    const aStr = angleStr(d);
+    angleDisplay.textContent = "\u03B8 = " + aStr;
+    degDisplay.textContent = d + "\u00B0";
+    radDisplay.textContent = radianStr(d);
+
+    // Quadrant
+    document.getElementById("quadrant-val").textContent = quadrant(d);
+
+    // Reference angle
+    const ra = refAngle(d);
+    const raStr = angleMode === "degrees" ? ra + "\u00B0" : radianStr(ra);
+    document.getElementById("ref-angle-val").textContent = raStr;
+  }
+
+  /* ── Update right panel ── */
+  function updateRight() {
+    const d = ((angle % 360) + 360) % 360;
+    const rad = d * DEG;
+    const sinVal = Math.sin(rad);
+    const cosVal = Math.cos(rad);
+    const sin2 = sinVal * sinVal;
+    const cos2 = cosVal * cosVal;
+    const tanVal = Math.abs(cosVal) < 1e-10 ? 0 : sinVal / cosVal;
+
+    // Pythagorean bar
+    const cosPercent = Math.max(2, cos2 * 100);
+    const sinPercent = Math.max(2, sin2 * 100);
+    document.getElementById("pyth-cos").style.width = cosPercent + "%";
+    document.getElementById("pyth-sin").style.width = sinPercent + "%";
+    document.getElementById("pyth-cos").textContent = cos2 < 0.005 ? "" : "cos\u00B2\u03B8";
+    document.getElementById("pyth-sin").textContent = sin2 < 0.005 ? "" : "sin\u00B2\u03B8";
+
+    // Pythagorean equation
+    document.getElementById("pyth-eq").innerHTML =
+      '<span class="cos-val">' + cos2.toFixed(4) + '</span> + <span class="sin-val">' + sin2.toFixed(4) + '</span> = <span class="eq-result">' + (sin2+cos2).toFixed(4) + '</span>';
+
+    // Function bars
+    const sinBar = Math.abs(sinVal) * 50; // scale: 1 = 50%
+    const cosBar = Math.abs(cosVal) * 50;
+    const tanBar = Math.min(Math.abs(tanVal), 4) / 4 * 50;
+    document.getElementById("bar-sin").style.width = Math.max(2, sinBar) + "%";
+    document.getElementById("bar-cos").style.width = Math.max(2, cosBar) + "%";
+    document.getElementById("bar-tan").style.width = Math.max(2, tanBar) + "%";
+    document.getElementById("bar-sin-val").textContent = sinVal.toFixed(4);
+    document.getElementById("bar-cos-val").textContent = cosVal.toFixed(4);
+    document.getElementById("bar-tan-val").textContent = Math.abs(cosVal) < 1e-10 ? "undef" : tanVal.toFixed(4);
+
+    // Quick angle active state
+    document.querySelectorAll("#quick-angles .common-angle-item").forEach(item => {
+      item.classList.toggle("active", parseInt(item.dataset.deg) === d);
+    });
+  }
+
+  /* ── Main update ── */
+  function update() {
+    drawStatic();
+    drawDynamic();
+    updateValues();
+    updateRight();
+  }
+
+  /* ── Set angle ── */
+  function setAngle(a) {
+    angle = ((Math.round(a) % 360) + 360) % 360;
+    if (angle === 0 && a >= 359) angle = 360;
+    slider.value = angle;
+    update();
+  }
+
+  /* ── Event handlers (exposed globally) ── */
+  window.onSliderInput = function(val) {
+    let a = parseInt(val);
+    if (document.getElementById("chk-snap").checked) a = snapAngle(a);
+    setAngle(a);
+  };
+
+  window.setAngleMode = function(mode) {
+    angleMode = mode;
+    document.getElementById("btn-deg").classList.toggle("active", mode === "degrees");
+    document.getElementById("btn-rad").classList.toggle("active", mode === "radians");
+    document.getElementById("btn-deg").setAttribute("aria-checked", mode === "degrees");
+    document.getElementById("btn-rad").setAttribute("aria-checked", mode === "radians");
+    update();
+  };
+
+  window.setValueMode = function(mode) {
+    valueMode = mode;
+    document.getElementById("btn-exact").classList.toggle("active", mode === "exact");
+    document.getElementById("btn-decimal").classList.toggle("active", mode === "decimal");
+    document.getElementById("btn-exact").setAttribute("aria-checked", mode === "exact");
+    document.getElementById("btn-decimal").setAttribute("aria-checked", mode === "decimal");
+    update();
+  };
+
+  window.onSnapChange = function() {
+    if (document.getElementById("chk-snap").checked) {
+      setAngle(snapAngle(angle));
+    }
+  };
+
+  window.togglePlay = function() {
+    if (playing) {
+      // Pause
+      playing = false;
+      if (animId) { cancelAnimationFrame(animId); animId = null; }
+      lastTimestamp = null;
+      const btn = document.getElementById("play-btn");
+      const icon = document.getElementById("play-icon");
+      const text = document.getElementById("play-text");
+      btn.classList.remove("playing");
+      icon.innerHTML = '<polygon points="5,3 19,12 5,21"/>';
+      text.textContent = "Resume";
+    } else {
+      // Play / Resume
+      playing = true;
+      lastTimestamp = null;
+      const btn = document.getElementById("play-btn");
+      const icon = document.getElementById("play-icon");
+      const text = document.getElementById("play-text");
+      btn.classList.add("playing");
+      icon.innerHTML = '<rect x="5" y="3" width="4" height="18"/><rect x="15" y="3" width="4" height="18"/>';
+      text.textContent = "Pause";
+      animId = requestAnimationFrame(animateFrame);
+    }
+  };
+
+  window.resetAngle = function() {
+    // Stop animation if playing
+    if (playing) {
+      playing = false;
+      if (animId) { cancelAnimationFrame(animId); animId = null; }
+      lastTimestamp = null;
+      const btn = document.getElementById("play-btn");
+      const icon = document.getElementById("play-icon");
+      const text = document.getElementById("play-text");
+      btn.classList.remove("playing");
+      icon.innerHTML = '<polygon points="5,3 19,12 5,21"/>';
+      text.textContent = "Play";
+    }
+    setAngle(0);
+  };
+
+  window.onSpeedChange = function(val) {
+    speed = parseInt(val);
+    document.getElementById("speed-display").textContent = speed + "\u00B0/frame";
+  };
+
+  window.update = update;
+
+  function animateFrame(timestamp) {
+    if (!playing) return;
+    if (!lastTimestamp) lastTimestamp = timestamp;
+    const elapsed = timestamp - lastTimestamp;
+    // Target ~60fps: each frame is ~16.67ms, use elapsed to scale smoothly
+    const degreesPerMs = speed / 16.67;
+    let delta = elapsed * degreesPerMs;
+    // Clamp delta to prevent huge jumps if tab was inactive
+    if (delta > 30) delta = speed;
+    lastTimestamp = timestamp;
+
+    let newAngle = angle + delta;
+    // Wrap around smoothly (allow continuous rotation)
+    if (newAngle >= 360) newAngle = newAngle - 360;
+    // During animation, don't snap - keep it smooth
+    setAngle(Math.round(newAngle));
+    animId = requestAnimationFrame(animateFrame);
+  }
+
+  /* ── Mouse/touch drag on SVG ── */
+  let dragging = false;
+
+  function getAngleFromEvent(e) {
+    const rect = svg.getBoundingClientRect();
+    const scaleX = 560 / rect.width;
+    const scaleY = 560 / rect.height;
+    let clientX, clientY;
+    if (e.touches) {
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    } else {
+      clientX = e.clientX;
+      clientY = e.clientY;
+    }
+    const mx = (clientX - rect.left) * scaleX;
+    const my = (clientY - rect.top) * scaleY;
+    const dx = mx - CX;
+    const dy = -(my - CY);
+    let a = Math.atan2(dy, dx) / DEG;
+    if (a < 0) a += 360;
+    return Math.round(a);
+  }
+
+  svg.addEventListener("mousedown", function(e) {
+    dragging = true;
+    const a = getAngleFromEvent(e);
+    if (document.getElementById("chk-snap").checked) setAngle(snapAngle(a));
+    else setAngle(a);
+  });
+  svg.addEventListener("mousemove", function(e) {
+    if (!dragging) return;
+    const a = getAngleFromEvent(e);
+    if (document.getElementById("chk-snap").checked) setAngle(snapAngle(a));
+    else setAngle(a);
+  });
+  document.addEventListener("mouseup", function() { dragging = false; });
+
+  svg.addEventListener("touchstart", function(e) {
+    e.preventDefault();
+    dragging = true;
+    const a = getAngleFromEvent(e);
+    if (document.getElementById("chk-snap").checked) setAngle(snapAngle(a));
+    else setAngle(a);
+  }, {passive:false});
+  svg.addEventListener("touchmove", function(e) {
+    e.preventDefault();
+    if (!dragging) return;
+    const a = getAngleFromEvent(e);
+    if (document.getElementById("chk-snap").checked) setAngle(snapAngle(a));
+    else setAngle(a);
+  }, {passive:false});
+  document.addEventListener("touchend", function() { dragging = false; });
+
+  /* ── Keyboard navigation ── */
+  document.addEventListener("keydown", function(e) {
+    if (e.target.tagName === "INPUT" && e.target.type !== "range") return;
+    if (e.key === "ArrowRight" || e.key === "ArrowUp") {
+      e.preventDefault();
+      let a = angle + (e.shiftKey ? 15 : 1);
+      if (document.getElementById("chk-snap").checked) a = snapAngle(a);
+      setAngle(a);
+    } else if (e.key === "ArrowLeft" || e.key === "ArrowDown") {
+      e.preventDefault();
+      let a = angle - (e.shiftKey ? 15 : 1);
+      if (a < 0) a += 360;
+      if (document.getElementById("chk-snap").checked) a = snapAngle(a);
+      setAngle(a);
+    } else if (e.key === " ") {
+      e.preventDefault();
+      togglePlay();
+    }
+  });
+
+  /* ── Quick angle buttons ── */
+  window.setQuickAngleMode = function(mode) {
+    quickAngleMode = mode;
+    document.getElementById("btn-qa-deg").classList.toggle("active", mode === "degrees");
+    document.getElementById("btn-qa-rad").classList.toggle("active", mode === "radians");
+    document.getElementById("btn-qa-deg").setAttribute("aria-checked", mode === "degrees");
+    document.getElementById("btn-qa-rad").setAttribute("aria-checked", mode === "radians");
+    buildQuickAngles();
+  };
+
+  function buildQuickAngles() {
+    const container = document.getElementById("quick-angles");
+    container.innerHTML = "";
+    COMMON_DEGS.forEach(deg => {
+      const div = document.createElement("div");
+      div.className = "common-angle-item";
+      div.dataset.deg = deg;
+      if (quickAngleMode === "degrees") {
+        div.textContent = deg + "\u00B0";
+      } else {
+        div.textContent = EXACT[deg] ? EXACT[deg].rad : (deg * DEG).toFixed(4);
+      }
+      div.setAttribute("role", "button");
+      div.setAttribute("tabindex", "0");
+      div.setAttribute("aria-label", "Set angle to " + deg + " degrees");
+      div.addEventListener("click", function() { setAngle(deg); });
+      div.addEventListener("keydown", function(e) { if(e.key==="Enter"||e.key===" ") { e.preventDefault(); setAngle(deg); }});
+      container.appendChild(div);
+    });
+    // Update active state
+    const d = ((angle % 360) + 360) % 360;
+    container.querySelectorAll(".common-angle-item").forEach(item => {
+      item.classList.toggle("active", parseInt(item.dataset.deg) === d);
+    });
+  }
+
+  /* ── Initialize ── */
+  drawStatic();
+  buildQuickAngles();
+  setAngle(45);
+
+  /* ── Resize handling ── */
+  window.addEventListener("resize", function() {
+    drawStatic();
+    update();
+  });
+
+})();
+</script>
+</body>
+</html>
